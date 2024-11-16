@@ -7,6 +7,7 @@ import com.example.blisschallenge.data.domain.model.Emoji
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -48,7 +49,6 @@ class EmojiViewModel @Inject constructor(
 
     private suspend fun requestEmojis(): List<Emoji> {
         withContext(Dispatchers.IO) {
-            println("requestEmojis (local)")
             response = emojiRepository.getLocalEmojis()
         }
         if (response.isEmpty()) {
@@ -59,14 +59,22 @@ class EmojiViewModel @Inject constructor(
         return response.map { it }
     }
 
-    fun getRandomEmoji(): String {
-        val emojis = emojiState.value.emojis
-        return emojis.random().url
-    }
-
     private suspend fun populateDatabase(apiResponse: List<Emoji>) {
         withContext(Dispatchers.IO) {
             emojiRepository.setEmojiList(apiResponse)
+        }
+    }
+
+    fun removeEmojiFromState(emoji: Emoji) {
+        val emojis = _emojiState.value.emojis.toMutableList().apply { remove(emoji) }
+        _emojiState.update { it.copy(emojis = emojis) }
+    }
+
+    fun resetState() {
+        viewModelScope.launch {
+            _emojiState.update { it.copy(isLoading = true) }
+            delay(500)
+            _emojiState.update { it.copy(emojis = response, error = "", isLoading = false) }
         }
     }
 }
