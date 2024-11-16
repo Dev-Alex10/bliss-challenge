@@ -1,8 +1,8 @@
 package com.example.blisschallenge.di
 
-import com.example.blisschallenge.data.domain.emoji.EmojiRepository
-import com.example.blisschallenge.data.domain.emoji.EmojiRepositoryImpl
-import com.example.blisschallenge.data.remote.RemoteDataSource
+import com.example.blisschallenge.data.DefaultBlissRepository
+import com.example.blisschallenge.data.local.BlissLocalSource
+import com.example.blisschallenge.data.remote.BlissRemoteDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,8 +15,9 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun provideEmojiRepository(
-        remoteDataSource: RemoteDataSource
-    ): EmojiRepository {
-        return EmojiRepositoryImpl(remoteDataSource)
+        remoteDataSource: BlissRemoteDataSource,
+        localDataSource: BlissLocalSource
+    ): DefaultBlissRepository {
+        return DefaultBlissRepository(remoteDataSource, localDataSource)
     }
 }
