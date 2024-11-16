@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace = "com.example.blisschallenge"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.blisschallenge"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -60,12 +60,15 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     //hilt
     implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
     ksp(libs.hilt.compiler)
     //Retrofit
     implementation(libs.retrofit)
-    implementation (libs.converter.gson)
+    implementation(libs.converter.gson)
     //room
-    implementation (libs.androidx.room.runtime)
-    implementation (libs.androidx.room.ktx)
-    ksp (libs.androidx.room.compiler)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+    //Coil
+    implementation(libs.coil.compose)
 }
