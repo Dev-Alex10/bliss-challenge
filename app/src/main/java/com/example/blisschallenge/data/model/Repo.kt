@@ -1,6 +1,6 @@
-package com.example.blisschallenge.data.remote.model
+package com.example.blisschallenge.data.model
 
-data class RepoAPI(
+data class Repo(
     val id: Long,
     val fullName: String,
     val private: Boolean,

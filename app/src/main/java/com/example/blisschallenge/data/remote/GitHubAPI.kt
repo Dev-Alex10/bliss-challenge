@@ -1,14 +1,16 @@
 package com.example.blisschallenge.data.remote
 
-import com.example.blisschallenge.data.remote.model.AvatarAPI
-import com.example.blisschallenge.data.remote.model.RepoAPI
+import com.example.blisschallenge.data.model.Avatar
+import com.example.blisschallenge.data.model.Repo
 import retrofit2.http.GET
 
 interface GitHubAPI {
     @GET("/emojis")
     suspend fun getEmojis(): Map<String, String>
+
     @GET("/users/{username}")
-    suspend fun getAvatar(username: String): AvatarAPI
+    suspend fun getAvatar(username: String): Avatar
+
     @GET("/users/{username}/repos")
-    suspend fun getRepos(username: String): List<RepoAPI>
+    suspend fun getRepos(username: String): List<Repo>
 }
