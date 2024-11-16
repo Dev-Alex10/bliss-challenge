@@ -1,4 +1,4 @@
-package com.example.blisschallenge.data.model
+package com.example.blisschallenge.data.domain.model
 
 data class Avatar(
     val login: String,

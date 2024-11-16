@@ -2,42 +2,71 @@ package com.example.blisschallenge.ui.emoji
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.blisschallenge.data.domain.emoji.EmojiRepository
+import com.example.blisschallenge.data.DefaultBlissRepository
+import com.example.blisschallenge.data.domain.model.Emoji
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class EmojiViewModel @Inject constructor(
-    private val emojiRepository: EmojiRepository
+    private val emojiRepository: DefaultBlissRepository
 ) : ViewModel() {
-    val emojiState: MutableStateFlow<EmojiState> =
+    private var emojiJob: Job? = null
+    private var response: List<Emoji> = emptyList()
+    private val _emojiState: MutableStateFlow<EmojiState> =
         MutableStateFlow(
             EmojiState(
                 emojis = emptyList(),
                 error = ""
             )
         )
+    val emojiState: StateFlow<EmojiState> get() = _emojiState
+
     init {
         prepareEmojiList()
     }
 
     private fun prepareEmojiList() {
-        print("prepareEmojiList")
-        viewModelScope.launch {
+        emojiJob?.cancel()
+        emojiJob = viewModelScope.launch {
             try {
-                val emojis = emojiRepository.getEmojis()
+                val emojis = requestEmojis()
                 println("emojis: $emojis")
-                emojiState.update { it.copy(emojis = emojis) }
+                _emojiState.update { it.copy(emojis = emojis) }
             } catch (e: Exception) {
-                emojiState.update { it.copy(error = e.message ?: "An error occurred") }
+                _emojiState.update { it.copy(error = e.message ?: "An error occurred") }
             }
         }
     }
+
+    private suspend fun requestEmojis(): List<Emoji> {
+        withContext(Dispatchers.IO) {
+            println("requestEmojis (local)")
+            response = emojiRepository.getLocalEmojis()
+        }
+        if (response.isEmpty()) {
+            println("requestEmojis (response is empty)")
+            response = emojiRepository.getEmojis()
+            populateDatabase(response)
+        }
+        return response.map { it }
+    }
+
     fun getRandomEmoji(): String {
         val emojis = emojiState.value.emojis
         return emojis.random().url
+    }
+
+    private suspend fun populateDatabase(apiResponse: List<Emoji>) {
+        withContext(Dispatchers.IO) {
+            emojiRepository.setEmojiList(apiResponse)
+        }
     }
 }

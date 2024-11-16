@@ -1,7 +1,7 @@
 package com.example.blisschallenge.data.remote
 
-import com.example.blisschallenge.data.model.Avatar
-import com.example.blisschallenge.data.model.Repo
+import com.example.blisschallenge.data.domain.model.Avatar
+import com.example.blisschallenge.data.domain.model.Repo
 import retrofit2.http.GET
 
 interface GitHubAPI {
