@@ -71,4 +71,7 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     //Coil
     implementation(libs.coil.compose)
+    //Paging
+    implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.androidx.paging.compose)
 }

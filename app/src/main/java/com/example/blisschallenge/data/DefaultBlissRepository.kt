@@ -2,7 +2,7 @@ package com.example.blisschallenge.data
 
 import com.example.blisschallenge.data.domain.model.Avatar
 import com.example.blisschallenge.data.domain.model.Emoji
-import com.example.blisschallenge.data.domain.model.Repo
+import com.example.blisschallenge.data.domain.model.Repository
 import com.example.blisschallenge.data.local.BlissLocalSource
 import com.example.blisschallenge.data.remote.BlissRemoteDataSource
 import javax.inject.Inject
@@ -22,11 +22,6 @@ class DefaultBlissRepository @Inject constructor(
     override suspend fun setEmojiList(emojis: List<Emoji>) {
         localDataSource.setEmojis(emojis)
     }
-
-    override suspend fun getRepos(): List<Repo> {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun getRemoteAvatar(username: String): Avatar {
         return remoteDataSource.getAvatar(username)
     }
@@ -34,13 +29,19 @@ class DefaultBlissRepository @Inject constructor(
     fun getLocalAvatar(username: String): Avatar? {
         return localDataSource.getAvatar(username)
     }
+
     fun getAvatars(): List<Avatar> {
         return localDataSource.getAvatars()
     }
+
     suspend fun insertLocalAvatar(avatar: Avatar) {
         localDataSource.insertAvatar(avatar)
     }
+
     fun deleteLocalAvatar(username: String) {
         localDataSource.deleteAvatar(username)
+    }
+    override suspend fun getRepositories(page: Int): Result<List<Repository>> {
+        return remoteDataSource.getRepositories(page)
     }
 }

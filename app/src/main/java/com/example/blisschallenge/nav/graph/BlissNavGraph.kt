@@ -12,6 +12,7 @@ import com.example.blisschallenge.nav.destinations.RepoList
 import com.example.blisschallenge.ui.MainView
 import com.example.blisschallenge.ui.avatar.AvatarView
 import com.example.blisschallenge.ui.emoji.EmojiView
+import com.example.blisschallenge.ui.repositories.RepositoryListView
 
 @Composable
 fun BlissNavHost(navHostController: NavHostController, modifier: Modifier) {
@@ -24,6 +25,7 @@ fun BlissNavHost(navHostController: NavHostController, modifier: Modifier) {
             MainView(
                 onClickEmojiList = { navHostController.navigate(EmojiList.route) },
                 onClickAvatarList = { navHostController.navigate(AvatarList.route) },
+                onClickRepositoryList = { navHostController.navigate(RepoList.route) },
                 modifier = modifier
             )
         }
@@ -34,7 +36,7 @@ fun BlissNavHost(navHostController: NavHostController, modifier: Modifier) {
             AvatarView(modifier = modifier)
         }
         composable(RepoList.route) {
-
+            RepositoryListView()
         }
     }
 }

@@ -19,4 +19,8 @@ class BlissRemoteDataSource @Inject constructor(
             return Avatar(null, null, null, errorMessage = e.message)
         }
     }
+
+    suspend fun getRepositories(page: Int) = kotlin.runCatching {
+        gitHubAPI.getRepositories(page)
+    }
 }
