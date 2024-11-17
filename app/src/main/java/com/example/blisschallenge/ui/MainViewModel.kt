@@ -22,7 +22,7 @@ class MainViewModel @Inject constructor(private val repository: DefaultBlissRepo
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            emojis = repository.getLocalEmojis()
+            emojis = repository.getEmojis().getOrNull().orEmpty()
         }
     }
 
@@ -44,7 +44,7 @@ class MainViewModel @Inject constructor(private val repository: DefaultBlissRepo
     }
 
     private suspend fun getEmojis(): List<Emoji> {
-        return repository.getEmojis()
+        return repository.getEmojis().getOrNull().orEmpty()
     }
 
     fun getRandomEmoji() {
@@ -73,24 +73,17 @@ class MainViewModel @Inject constructor(private val repository: DefaultBlissRepo
                 return@launch
             }
             val remoteAvatar = repository.getRemoteAvatar(username)
-            if (remoteAvatar.avatarUrl == null) {
-                println("No avatar found")
-                updateState(null, remoteAvatar.errorMessage ?: "No avatar found")
-                return@launch
-            }
-            println("Avatar found remotely")
-            insertLocalAvatar(remoteAvatar)
-            updateState(remoteAvatar)
-
+            remoteAvatar.fold(
+                onSuccess = {
+                    println("Avatar found remotely")
+                    updateState(it)
+                },
+                onFailure = {
+                    updateState(null, it.message ?: "Unknown error")
+                }
+            )
         }
     }
-
-    private suspend fun insertLocalAvatar(avatar: Avatar) {
-        withContext(Dispatchers.IO) {
-            repository.insertLocalAvatar(avatar)
-        }
-    }
-
     private suspend fun updateState(avatar: Avatar?, errorMessage: String = "") {
         withContext(Dispatchers.Main) {
             _mainState.update {

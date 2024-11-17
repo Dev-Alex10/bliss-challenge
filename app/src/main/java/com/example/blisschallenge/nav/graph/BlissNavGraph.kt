@@ -24,6 +24,7 @@ fun BlissNavHost(navHostController: NavHostController, modifier: Modifier) {
             MainView(
                 onClickEmojiList = { navHostController.navigate(EmojiList.route) },
                 onClickAvatarList = { navHostController.navigate(AvatarList.route) },
+                onClickRepositoriesList = { navHostController.navigate(RepoList.route) },
                 modifier = modifier
             )
         }

@@ -14,7 +14,7 @@ class BlissLocalSource @Inject constructor(
     private val emojiDao: EmojiDao,
     private val avatarDao: AvatarDao
 ) {
-    fun getEmojis(): List<Emoji> {
+    suspend fun getEmojis(): List<Emoji> {
         return emojiDao.getAllEmojis().map { it.toDomain() }
     }
 
@@ -22,14 +22,14 @@ class BlissLocalSource @Inject constructor(
         emojis.map { emojiDao.insertEmojis(it.toDatabaseEntity()) }
     }
 
-    fun getAvatar(username: String): Avatar? {
+    suspend fun getAvatar(username: String): Avatar? {
         return avatarDao.getAvatar(username)?.toDomain()
     }
-    fun getAvatars(): List<Avatar> {
+    suspend fun getAvatars(): List<Avatar> {
         return avatarDao.getAvatars().map { it.toDomain() }
     }
 
-    fun deleteAvatar(username: String) {
+    suspend fun deleteAvatar(username: String) {
         avatarDao.deleteAvatar(username)
     }
 
