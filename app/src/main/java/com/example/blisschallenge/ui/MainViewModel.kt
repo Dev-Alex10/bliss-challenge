@@ -3,7 +3,6 @@ package com.example.blisschallenge.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.blisschallenge.data.DefaultBlissRepository
-import com.example.blisschallenge.data.domain.model.Avatar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -61,19 +60,17 @@ class MainViewModel @Inject constructor(private val repository: DefaultBlissRepo
             remoteAvatar.fold(
                 onSuccess = {
                     println("Avatar found remotely")
-                    updateState(it)
+                    _mainState.update {
+                        it.copy(image = it.image)
+                    }
                 },
                 onFailure = {
-                    updateState(null, it.message ?: "Unknown error")
+                    _mainState.update {
+                        it.copy(
+                            image = null, errorMessage = it.errorMessage
+                        )
+                    }
                 }
-            )
-        }
-    }
-
-    private fun updateState(avatar: Avatar?, errorMessage: String = "") {
-        _mainState.update {
-            it.copy(
-                image = avatar?.toMainViewImage(), errorMessage = errorMessage
             )
         }
     }
