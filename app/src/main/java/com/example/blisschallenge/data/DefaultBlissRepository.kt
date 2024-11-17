@@ -17,16 +17,30 @@ class DefaultBlissRepository @Inject constructor(
         return localDataSource.getEmojis()
     }
 
+    override suspend fun getEmojis() = remoteDataSource.getEmojis()
+
+    override suspend fun setEmojiList(emojis: List<Emoji>) {
+        localDataSource.setEmojis(emojis)
+    }
+
     override suspend fun getRepos(): List<Repo> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getAvatars(): List<Avatar> {
-        TODO("Not yet implemented")
+    override suspend fun getRemoteAvatar(username: String): Avatar {
+        return remoteDataSource.getAvatar(username)
     }
 
-    override suspend fun getEmojis() = remoteDataSource.getEmojis()
-    override suspend fun setEmojiList(emojis: List<Emoji>) {
-        localDataSource.setEmojis(emojis)
+    fun getLocalAvatar(username: String): Avatar? {
+        return localDataSource.getAvatar(username)
+    }
+    fun getAvatars(): List<Avatar> {
+        return localDataSource.getAvatars()
+    }
+    suspend fun insertLocalAvatar(avatar: Avatar) {
+        localDataSource.insertAvatar(avatar)
+    }
+    fun deleteLocalAvatar(username: String) {
+        localDataSource.deleteAvatar(username)
     }
 }

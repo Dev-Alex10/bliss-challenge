@@ -6,7 +6,7 @@ import com.example.blisschallenge.data.domain.model.Repo
 
 interface BlissRepository {
     suspend fun getRepos(): List<Repo>
-    suspend fun getAvatars(): List<Avatar>
+    suspend fun getRemoteAvatar(username:String): Avatar?
     suspend fun getEmojis(): List<Emoji>
     suspend fun setEmojiList(emojis: List<Emoji>)
 }

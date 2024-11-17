@@ -9,7 +9,7 @@ object Home: BlissAppDestination {
 object EmojiList: BlissAppDestination {
     override val route = "EmojiList"
 }
-object Avatar: BlissAppDestination {
+object AvatarList: BlissAppDestination {
     override val route = "Avatar"
 }
 object RepoList: BlissAppDestination {

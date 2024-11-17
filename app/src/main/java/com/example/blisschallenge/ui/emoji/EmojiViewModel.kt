@@ -25,7 +25,7 @@ class EmojiViewModel @Inject constructor(
         MutableStateFlow(
             EmojiState(
                 emojis = emptyList(),
-                error = ""
+                errorMessage = ""
             )
         )
     val emojiState: StateFlow<EmojiState> get() = _emojiState
@@ -42,7 +42,7 @@ class EmojiViewModel @Inject constructor(
                 println("emojis: $emojis")
                 _emojiState.update { it.copy(emojis = emojis) }
             } catch (e: Exception) {
-                _emojiState.update { it.copy(error = e.message ?: "An error occurred") }
+                _emojiState.update { it.copy(errorMessage = e.message ?: "An error occurred") }
             }
         }
     }
@@ -74,7 +74,7 @@ class EmojiViewModel @Inject constructor(
         viewModelScope.launch {
             _emojiState.update { it.copy(isLoading = true) }
             delay(500)
-            _emojiState.update { it.copy(emojis = response, error = "", isLoading = false) }
+            _emojiState.update { it.copy(emojis = response, errorMessage = "", isLoading = false) }
         }
     }
 }
