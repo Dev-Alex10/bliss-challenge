@@ -26,6 +26,7 @@ fun MainView(
     viewModel: MainViewModel = hiltViewModel(),
     onClickEmojiList: () -> Unit,
     onClickAvatarList: () -> Unit,
+    onClickRepositoryList: () -> Unit,
     modifier: Modifier,
 ) {
     val state = viewModel.mainState.collectAsState()
@@ -75,6 +76,12 @@ fun MainView(
             modifier = modifier,
         ) {
             Text(text = "Show Avatar List")
+        }
+        Button(
+            onClick = onClickRepositoryList,
+            modifier = modifier,
+        ) {
+            Text(text = "Show Repository List")
         }
     }
 }

@@ -1,9 +1,10 @@
 package com.example.blisschallenge.data.remote
 
 import com.example.blisschallenge.data.domain.model.Avatar
-import com.example.blisschallenge.data.domain.model.Repo
+import com.example.blisschallenge.data.domain.model.Repository
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface GitHubAPI {
     @GET("/emojis")
@@ -12,6 +13,6 @@ interface GitHubAPI {
     @GET("/users/{username}")
     suspend fun getAvatar(@Path("username") username: String): Avatar
 
-    @GET("/users/{username}/repos")
-    suspend fun getRepos(username: String): List<Repo>
+    @GET("/users/google/repos")
+    suspend fun getRepositories(@Query("page") page: Int): List<Repository>
 }
