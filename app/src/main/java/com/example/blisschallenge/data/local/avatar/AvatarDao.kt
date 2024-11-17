@@ -8,13 +8,13 @@ import androidx.room.Query
 @Dao
 interface AvatarDao {
     @Query("SELECT * FROM Avatar")
-    fun getAvatars(): List<AvatarEntity>
+    suspend fun getAvatars(): List<AvatarEntity>
 
     @Query("SELECT * FROM Avatar WHERE username= :username")
-    fun getAvatar(username: String): AvatarEntity?
+    suspend fun getAvatar(username: String): AvatarEntity?
 
     @Query("DELETE FROM Avatar WHERE username= :username")
-    fun deleteAvatar(username: String)
+    suspend fun deleteAvatar(username: String)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAvatar(avatar: AvatarEntity)

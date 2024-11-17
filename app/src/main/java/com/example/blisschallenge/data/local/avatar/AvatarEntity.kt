@@ -17,16 +17,12 @@ data class AvatarEntity(
 
 fun AvatarEntity.toDomain(): Avatar {
     return Avatar(
-        id = id,
         username = username,
         avatarUrl = avatarUrl,
     )
 }
 
 fun Avatar.toDatabaseEntity(): AvatarEntity {
-    if (username.isNullOrEmpty() || avatarUrl.isNullOrEmpty()) {
-        throw IllegalArgumentException("login or avatarUrl cannot be empty")
-    }
     return AvatarEntity(
         username = username,
         avatarUrl = avatarUrl

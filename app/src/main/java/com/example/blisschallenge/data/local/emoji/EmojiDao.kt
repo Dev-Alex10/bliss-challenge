@@ -8,7 +8,7 @@ import androidx.room.Query
 @Dao
 interface EmojiDao {
     @Query("SELECT * FROM Emoji")
-    fun getAllEmojis(): List<EmojiEntity>
+    suspend fun getAllEmojis(): List<EmojiEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEmojis(emoji: EmojiEntity)

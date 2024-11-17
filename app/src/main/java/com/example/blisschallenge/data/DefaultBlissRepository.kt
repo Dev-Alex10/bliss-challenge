@@ -13,32 +13,35 @@ class DefaultBlissRepository @Inject constructor(
     private val remoteDataSource: BlissRemoteDataSource,
     private val localDataSource: BlissLocalSource
 ) : BlissRepository {
-    fun getLocalEmojis(): List<Emoji> {
-        return localDataSource.getEmojis()
-    }
 
-    override suspend fun getEmojis() = remoteDataSource.getEmojis()
+    override suspend fun getEmojis(): Result<List<Emoji>> {
+        val emojis = localDataSource.getEmojis()
+        if (emojis.isNotEmpty()) {
+            return Result.success(emojis)
+        }
+        return remoteDataSource.getEmojis().onSuccess {
+            localDataSource.setEmojis(emojis)
+        }
+    }
 
     override suspend fun setEmojiList(emojis: List<Emoji>) {
         localDataSource.setEmojis(emojis)
     }
-    override suspend fun getRemoteAvatar(username: String): Avatar {
-        return remoteDataSource.getAvatar(username)
+    override suspend fun getAvatar(username: String): Result<Avatar> {
+        val avatar = localDataSource.getAvatar(username)
+        if (avatar != null) {
+            return Result.success(avatar)
+        }
+        return remoteDataSource.getAvatar(username).onSuccess { remoteAvatar ->
+            localDataSource.insertAvatar(remoteAvatar)
+        }
     }
 
-    fun getLocalAvatar(username: String): Avatar? {
-        return localDataSource.getAvatar(username)
-    }
-
-    fun getAvatars(): List<Avatar> {
+   suspend fun getAvatars(): List<Avatar> {
         return localDataSource.getAvatars()
     }
 
-    suspend fun insertLocalAvatar(avatar: Avatar) {
-        localDataSource.insertAvatar(avatar)
-    }
-
-    fun deleteLocalAvatar(username: String) {
+   suspend fun deleteLocalAvatar(username: String) {
         localDataSource.deleteAvatar(username)
     }
     override suspend fun getRepositories(page: Int): Result<List<Repository>> {
