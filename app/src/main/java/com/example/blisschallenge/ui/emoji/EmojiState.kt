@@ -5,5 +5,5 @@ import com.example.blisschallenge.data.domain.model.Emoji
 data class EmojiState(
     val emojis: List<Emoji> = emptyList(),
     val isLoading: Boolean = false,
-    val error: String = ""
+    val errorMessage: String = ""
 )

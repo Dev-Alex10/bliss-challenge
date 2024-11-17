@@ -3,6 +3,7 @@ package com.example.blisschallenge.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.blisschallenge.data.DefaultBlissRepository
+import com.example.blisschallenge.data.domain.model.Avatar
 import com.example.blisschallenge.data.domain.model.Emoji
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,7 +29,7 @@ class MainViewModel @Inject constructor(private val repository: DefaultBlissRepo
     private val _mainState: MutableStateFlow<MainViewState> = MutableStateFlow(
         MainViewState(
             text = "",
-            emoji = null,
+            image = null,
         )
     )
     val mainState: StateFlow<MainViewState>
@@ -37,6 +39,10 @@ class MainViewModel @Inject constructor(private val repository: DefaultBlissRepo
             initialValue = _mainState.value
         )
 
+    fun onTextChanged(text: String) {
+        _mainState.update { it.copy(text = text) }
+    }
+
     private suspend fun getEmojis(): List<Emoji> {
         return repository.getEmojis()
     }
@@ -44,17 +50,54 @@ class MainViewModel @Inject constructor(private val repository: DefaultBlissRepo
     fun getRandomEmoji() {
         if (emojis.isNotEmpty()) {
             val randomIndex = emojis.indices.random()
-            _mainState.update { it.copy(emoji = emojis[randomIndex]) }
-        } else {
-            viewModelScope.launch {
-                getRemoteEmojis()
-            }
+            _mainState.update { it.copy(image = emojis[randomIndex].toMainViewImage()) }
+            return
+        }
+        viewModelScope.launch {
+            getRemoteEmojis()
         }
     }
 
     private suspend fun getRemoteEmojis() {
         emojis = getEmojis()
         repository.setEmojiList(emojis)
-        _mainState.update { it.copy(emoji = emojis.random()) }
+        _mainState.update { it.copy(image = emojis.random().toMainViewImage()) }
+    }
+
+    fun getAvatar(username: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val avatar = repository.getLocalAvatar(username)
+            if (avatar != null) {
+                println("Avatar found locally")
+                updateState(avatar)
+                return@launch
+            }
+            val remoteAvatar = repository.getRemoteAvatar(username)
+            if (remoteAvatar.avatarUrl == null) {
+                println("No avatar found")
+                updateState(null, remoteAvatar.errorMessage ?: "No avatar found")
+                return@launch
+            }
+            println("Avatar found remotely")
+            insertLocalAvatar(remoteAvatar)
+            updateState(remoteAvatar)
+
+        }
+    }
+
+    private suspend fun insertLocalAvatar(avatar: Avatar) {
+        withContext(Dispatchers.IO) {
+            repository.insertLocalAvatar(avatar)
+        }
+    }
+
+    private suspend fun updateState(avatar: Avatar?, errorMessage: String = "") {
+        withContext(Dispatchers.Main) {
+            _mainState.update {
+                it.copy(
+                    image = avatar?.toMainViewImage(), errorMessage = errorMessage
+                )
+            }
+        }
     }
 }

@@ -15,6 +15,8 @@ import javax.inject.Singleton
 object DatabaseModule {
     @Provides
     fun provideEmojiDao(database: BlissDatabase) = database.emojiDao()
+    @Provides
+    fun provideAvatarDao(database: BlissDatabase) = database.avatarDao()
 
     @Provides
     @Singleton
