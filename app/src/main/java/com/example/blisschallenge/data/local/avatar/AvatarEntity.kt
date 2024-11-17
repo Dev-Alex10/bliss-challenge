@@ -9,8 +9,8 @@ import com.example.blisschallenge.data.domain.model.Avatar
 data class AvatarEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    @ColumnInfo(name = "login")
-    val login: String,
+    @ColumnInfo(name = "username")
+    val username: String,
     @ColumnInfo(name = "avatar_url")
     val avatarUrl: String
 )
@@ -18,17 +18,17 @@ data class AvatarEntity(
 fun AvatarEntity.toDomain(): Avatar {
     return Avatar(
         id = id,
-        login = login,
+        username = username,
         avatarUrl = avatarUrl,
     )
 }
 
 fun Avatar.toDatabaseEntity(): AvatarEntity {
-    if (login.isNullOrEmpty() || avatarUrl.isNullOrEmpty()) {
+    if (username.isNullOrEmpty() || avatarUrl.isNullOrEmpty()) {
         throw IllegalArgumentException("login or avatarUrl cannot be empty")
     }
     return AvatarEntity(
-        login = login,
+        username = username,
         avatarUrl = avatarUrl
     )
 }

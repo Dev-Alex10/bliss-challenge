@@ -40,7 +40,7 @@ fun AvatarView(
                     .data(avatar.avatarUrl)
                     .crossfade(true)
                     .build(),
-                contentDescription = avatar.login,
+                contentDescription = avatar.username,
                 modifier = modifier
                     .size(84.dp)
                     .clickable { viewModel.removeAvatar(avatar) },

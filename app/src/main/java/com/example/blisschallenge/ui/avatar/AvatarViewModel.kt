@@ -41,7 +41,7 @@ class AvatarViewModel @Inject constructor(
 
     fun removeAvatar(avatarToDelete: Avatar) {
         viewModelScope.launch(Dispatchers.IO) {
-            avatarRepository.deleteLocalAvatar(avatarToDelete.login ?: "")
+            avatarRepository.deleteLocalAvatar(avatarToDelete.username ?: "")
             withContext(Dispatchers.Main) {
                 _avatarState.update {
                     it.copy(avatars = _avatarState.value.avatars.filter { avatar -> avatar != avatarToDelete })

@@ -20,6 +20,6 @@ fun Emoji.toMainViewImage() = MainViewImage(
 )
 
 fun Avatar.toMainViewImage() = MainViewImage(
-    description = this.login ?: "",
+    description = this.username ?: "",
     url = this.avatarUrl ?: ""
 )
