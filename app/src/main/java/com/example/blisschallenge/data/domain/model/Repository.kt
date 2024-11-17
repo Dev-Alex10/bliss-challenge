@@ -1,7 +1,9 @@
 package com.example.blisschallenge.data.domain.model
 
+import com.google.gson.annotations.SerializedName
+
 data class Repository(
     val id: Long,
-    val fullName: String,
-    val private: Boolean,
+    @SerializedName("full_name")
+    val name: String
 )

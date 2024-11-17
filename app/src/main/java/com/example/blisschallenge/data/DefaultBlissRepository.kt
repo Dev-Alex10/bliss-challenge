@@ -27,11 +27,6 @@ class DefaultBlissRepository @Inject constructor(
     override suspend fun setEmojiList(emojis: List<Emoji>) {
         localDataSource.setEmojis(emojis)
     }
-
-    override suspend fun getRepos(): List<Repository> {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun getAvatar(username: String): Result<Avatar> {
         val avatar = localDataSource.getAvatar(username)
         if (avatar != null) {
@@ -48,5 +43,8 @@ class DefaultBlissRepository @Inject constructor(
 
    suspend fun deleteLocalAvatar(username: String) {
         localDataSource.deleteAvatar(username)
+    }
+    override suspend fun getRepositories(page: Int): Result<List<Repository>> {
+        return remoteDataSource.getRepositories(page)
     }
 }

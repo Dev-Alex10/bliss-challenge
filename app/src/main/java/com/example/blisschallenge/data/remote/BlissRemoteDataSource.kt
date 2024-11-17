@@ -13,4 +13,8 @@ class BlissRemoteDataSource @Inject constructor(
     suspend fun getAvatar(username: String) = kotlin.runCatching {
         gitHubAPI.getAvatar(username)
     }
+
+    suspend fun getRepositories(page: Int) = kotlin.runCatching {
+        gitHubAPI.getRepositories(page)
+    }
 }

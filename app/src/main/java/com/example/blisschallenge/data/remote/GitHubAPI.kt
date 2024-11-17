@@ -14,5 +14,5 @@ interface GitHubAPI {
     suspend fun getAvatar(@Path("username") username: String): Avatar
 
     @GET("/users/google/repos")
-    suspend fun getRepos(@Query("page") page: Int): List<Repository>
+    suspend fun getRepositories(@Query("page") page: Int): List<Repository>
 }
