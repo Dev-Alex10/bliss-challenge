@@ -32,14 +32,14 @@ class DefaultBlissRepository @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getRemoteAvatar(username: String): Result<Avatar> {
-        return remoteDataSource.getAvatar(username).onSuccess { avatar ->
-            localDataSource.insertAvatar(avatar)
+    override suspend fun getAvatar(username: String): Result<Avatar> {
+        val avatar = localDataSource.getAvatar(username)
+        if (avatar != null) {
+            return Result.success(avatar)
         }
-    }
-
-   suspend fun getLocalAvatar(username: String): Avatar? {
-        return localDataSource.getAvatar(username)
+        return remoteDataSource.getAvatar(username).onSuccess { remoteAvatar ->
+            localDataSource.insertAvatar(remoteAvatar)
+        }
     }
 
    suspend fun getAvatars(): List<Avatar> {

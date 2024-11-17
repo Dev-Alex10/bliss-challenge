@@ -5,11 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.blisschallenge.data.DefaultBlissRepository
 import com.example.blisschallenge.data.domain.model.Avatar
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,23 +27,19 @@ class AvatarViewModel @Inject constructor(
     }
 
     private fun getAvatars() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             val avatars = avatarRepository.getAvatars()
             println("Avatars found $avatars")
-            withContext(Dispatchers.Main) {
-                println("updating state")
-                _avatarState.update { it.copy(avatars = avatars) }
-            }
+            println("updating state")
+            _avatarState.update { it.copy(avatars = avatars) }
         }
     }
 
     fun removeAvatar(avatarToDelete: Avatar) {
-        viewModelScope.launch(Dispatchers.IO) {
-            avatarRepository.deleteLocalAvatar(avatarToDelete.username ?: "")
-            withContext(Dispatchers.Main) {
-                _avatarState.update {
-                    it.copy(avatars = _avatarState.value.avatars.filter { avatar -> avatar != avatarToDelete })
-                }
+        viewModelScope.launch {
+            avatarRepository.deleteLocalAvatar(avatarToDelete.username)
+            _avatarState.update {
+                it.copy(avatars = _avatarState.value.avatars.filter { avatar -> avatar != avatarToDelete })
             }
         }
     }
